@@ -4,16 +4,14 @@ public class SoundModel {
     private String name;
     private int imageId;
     private int soundId;
-    private String category;
 
     public SoundModel() {
     }
 
-    public SoundModel(String name, int imageId, int soundId, String category) {
+    public SoundModel(String name, int imageId, int soundId) {
         this.name = name;
         this.imageId = imageId;
         this.soundId = soundId;
-        this.category = category;
     }
 
     public String getName() {
@@ -38,13 +36,5 @@ public class SoundModel {
 
     public void setSoundId(int soundId) {
         this.soundId = soundId;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 }

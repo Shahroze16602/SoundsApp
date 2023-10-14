@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHolder> {
     Context context;
     ArrayList<SoundModel> soundModels;
-    MediaPlayer mediaPlayer;
+    static MediaPlayer mediaPlayer;
 
 
     public SoundAdapter(Context context, ArrayList<SoundModel> soundModels) {
@@ -38,8 +38,10 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         holder.binding.tvName.setText(currentItem.getName());
         holder.binding.imgIcon.setImageDrawable(ContextCompat.getDrawable(context, currentItem.getImageId()));
         holder.binding.getRoot().setOnClickListener(view -> {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
+            if (mediaPlayer != null) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
             }
             mediaPlayer = MediaPlayer.create(context, currentItem.getSoundId());
             mediaPlayer.start();

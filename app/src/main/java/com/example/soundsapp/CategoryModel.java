@@ -9,6 +9,11 @@ public class CategoryModel {
     public CategoryModel() {
     }
 
+    public CategoryModel(String category, ArrayList<SoundModel> soundModels) {
+        this.category = category;
+        this.soundModels = soundModels;
+    }
+
     public String getCategory() {
         return category;
     }
