@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.categoryViewholder>{
     Context context;
-    ArrayList<String> categories;
+    ArrayList<CategoryModel> categories;
     @NonNull
     @Override
     public categoryViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -25,7 +25,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.catego
 
     @Override
     public void onBindViewHolder(@NonNull categoryViewholder holder, int position) {
-        String catgoryName = categories.get(position);
+        CategoryModel currentitem = categories.get(position);
 
     }
 
