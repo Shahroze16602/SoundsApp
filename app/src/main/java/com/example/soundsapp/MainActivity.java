@@ -30,6 +30,13 @@ public class MainActivity extends AppCompatActivity {
         gunSounds.add(kar98);
         gunSounds.add(uzi);
         categoryModels.add(new CategoryModel("Guns", gunSounds));
+        ArrayList<SoundModel> animalSounds=new ArrayList<>();
+        animalSounds.add(new SoundModel("Dog",R.drawable.dog,R.raw.dog_sound));
+        animalSounds.add(new SoundModel("Cat",R.drawable.cat,R.raw.cat_sound));
+        animalSounds.add(new SoundModel("Wolf",R.drawable.wolf,R.raw.wolf_sound));
+        animalSounds.add(new SoundModel("Goat",R.drawable.goat,R.raw.goat_sound));
+        animalSounds.add(new SoundModel("Loin",R.drawable.lion,R.raw.lion_sound));
+        categoryModels.add(new CategoryModel("Animals", animalSounds));
         binding.rvCategories.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CategoryAdapter(this, categoryModels);
         binding.rvCategories.setAdapter(adapter);
