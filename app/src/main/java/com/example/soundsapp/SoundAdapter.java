@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.soundsapp.databinding.BottomSheetLayoutBinding;
@@ -50,19 +49,12 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
 
     @Override
     public void onBindViewHolder(@NonNull SoundViewHolder holder, int position) {
-        handler = new Handler();
         SoundModel currentItem = soundModels.get(holder.getAdapterPosition());
         holder.binding.tvName.setText(currentItem.getName());
         holder.binding.imgIcon.setImageDrawable(ContextCompat.getDrawable(context, currentItem.getImageId()));
         holder.binding.getRoot().setOnClickListener(view -> {
-            if (mediaPlayer != null) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.stop();
-                }
-            }
-            mediaPlayer = MediaPlayer.create(context, currentItem.getSoundId());
             if (!isOpened)
-                showBottomSheet();
+                showBottomSheet(holder.getAdapterPosition());
         });
     }
 
@@ -79,12 +71,23 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         }
     }
     @SuppressLint({"RestrictedApi", "QueryPermissionsNeeded"})
-    private void showBottomSheet() {
+    private void showBottomSheet(int position) {
+        final SoundModel[] currentItem = {soundModels.get(position)};
+        final int[] currentPosition = {position};
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+        }
+        handler = new Handler();
+        mediaPlayer = MediaPlayer.create(context, currentItem[0].getSoundId());
+        mediaPlayer.setLooping(false);
         Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         binding = BottomSheetLayoutBinding.inflate(LayoutInflater.from(dialog.getContext()));
-        dialog.setContentView(binding.getRoot());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         binding.seekBar.setMax(mediaPlayer.getDuration());
+        binding.tvName.setText(currentItem[0].getName());
+        dialog.setContentView(binding.getRoot());
         binding.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -102,16 +105,46 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         });
         binding.btnPlay.setOnClickListener(view -> {
             if (!mediaPlayer.isPlaying()) mediaPlayer.start();
-        });
-        binding.switchReplay.setOnCheckedChangeListener((compoundButton, b) -> {
-            Toast.makeText(context, ""+b, Toast.LENGTH_SHORT).show();
-            mediaPlayer.setLooping(b);
+            else {
+                mediaPlayer.seekTo(0);
+                mediaPlayer.start();
+            }
         });
         binding.btnPause.setOnClickListener(view -> mediaPlayer.pause());
+        binding.btnNext.setOnClickListener(view -> {
+            if (currentPosition[0] < soundModels.size() - 1) {
+                currentItem[0] = soundModels.get(currentPosition[0] + 1);
+                currentPosition[0] += 1;
+                mediaPlayer.stop();
+                mediaPlayer = MediaPlayer.create(context, currentItem[0].getSoundId());
+                binding.seekBar.setMax(mediaPlayer.getDuration());
+                binding.tvName.setText(currentItem[0].getName());
+            } else {
+                Toast.makeText(context, "No more sounds", Toast.LENGTH_SHORT).show();
+            }
+        });
+        binding.btnPrevious.setOnClickListener(view -> {
+            if (currentPosition[0] > 0) {
+                currentItem[0] = soundModels.get(currentPosition[0] - 1);
+                currentPosition[0] -= 1;
+                mediaPlayer.stop();
+                mediaPlayer = MediaPlayer.create(context, currentItem[0].getSoundId());
+                binding.tvName.setText(currentItem[0].getName());
+            } else {
+                Toast.makeText(context, "No more sounds", Toast.LENGTH_SHORT).show();
+            }
+        });
+        binding.switchReplay.setOnCheckedChangeListener((compoundButton, b) -> mediaPlayer.setLooping(b));
         dialog.setOnCancelListener(dialogInterface -> {
             isOpened = false;
+            mediaPlayer.stop();
+        });
+        dialog.setOnDismissListener(dialogInterface -> {
+            isOpened = false;
+            mediaPlayer.stop();
         });
         dialog.show();
+        updateSeekBar();
         Objects.requireNonNull(dialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
@@ -128,6 +161,6 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
                     e.printStackTrace();
                 }
             }
-        }, 250);
+        }, 100);
     }
 }
