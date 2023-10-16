@@ -135,6 +135,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
             }
         });
         binding.switchReplay.setOnCheckedChangeListener((compoundButton, b) -> mediaPlayer.setLooping(b));
+        binding.btnRepeat.setOnClickListener(view -> binding.switchReplay.setChecked(!binding.switchReplay.isChecked()));
         dialog.setOnCancelListener(dialogInterface -> {
             isOpened = false;
             mediaPlayer.stop();
