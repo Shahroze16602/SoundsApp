@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -101,6 +102,10 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         });
         binding.btnPlay.setOnClickListener(view -> {
             if (!mediaPlayer.isPlaying()) mediaPlayer.start();
+        });
+        binding.switchReplay.setOnCheckedChangeListener((compoundButton, b) -> {
+            Toast.makeText(context, ""+b, Toast.LENGTH_SHORT).show();
+            mediaPlayer.setLooping(b);
         });
         binding.btnPause.setOnClickListener(view -> mediaPlayer.pause());
         dialog.setOnCancelListener(dialogInterface -> {
