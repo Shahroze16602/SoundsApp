@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="10dp"
         android:layout_margin="5dp"
-        android:backgroundTint="#AEAEAE">
+        android:backgroundTint="#F4EDED">
     <TextView
         android:id="@+id/category_name"
         android:layout_width="match_parent"

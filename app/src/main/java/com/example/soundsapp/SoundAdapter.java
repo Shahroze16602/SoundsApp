@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.soundsapp.databinding.ItemSoundBinding;
@@ -17,13 +18,17 @@ import java.util.ArrayList;
 public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHolder> {
     Context context;
     ArrayList<SoundModel> soundModels;
+    FragmentManager fragmentManager;
     static MediaPlayer mediaPlayer;
 
 
     public SoundAdapter(Context context, ArrayList<SoundModel> soundModels) {
         this.context = context;
         this.soundModels = soundModels;
+            this.fragmentManager = fragmentManager;
+
     }
+
 
     @NonNull
     @Override
@@ -45,6 +50,9 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
             }
             mediaPlayer = MediaPlayer.create(context, currentItem.getSoundId());
             mediaPlayer.start();
+//            MyBottomSheetFragment bottomSheetFragment = new MyBottomSheetFragment();
+//            bottomSheetFragment.show(fragmentManager, bottomSheetFragment.getTag());
+
         });
     }
 
