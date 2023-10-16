@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     ArrayList<CategoryModel> categoryModels = new ArrayList<>();
     CategoryAdapter adapter;
+    MyBottomSheetFragment bottomSheetFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,5 +41,11 @@ public class MainActivity extends AppCompatActivity {
         binding.rvCategories.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CategoryAdapter(this, categoryModels);
         binding.rvCategories.setAdapter(adapter);
+
+        if(SoundAdapter.mediaPlayer.isPlaying()){
+            bottomSheetFragment = new MyBottomSheetFragment();
+            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+
+        }
     }
 }

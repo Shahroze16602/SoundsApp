@@ -19,7 +19,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
     Context context;
     ArrayList<SoundModel> soundModels;
     FragmentManager fragmentManager;
-    static MediaPlayer mediaPlayer;
+    static MediaPlayer mediaPlayer=new MediaPlayer();
 
 
     public SoundAdapter(Context context, ArrayList<SoundModel> soundModels) {

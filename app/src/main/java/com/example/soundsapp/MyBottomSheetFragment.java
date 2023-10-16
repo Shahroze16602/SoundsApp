@@ -10,7 +10,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 public class MyBottomSheetFragment extends BottomSheetDialogFragment {
 
     public MyBottomSheetFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -23,7 +22,7 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bottom_sheet, container, false);
 
-        // You can add your views and logic here
+        // add views and logic here
 
         return view;
     }
