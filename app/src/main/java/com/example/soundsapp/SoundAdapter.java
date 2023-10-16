@@ -25,7 +25,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
     public SoundAdapter(Context context, ArrayList<SoundModel> soundModels) {
         this.context = context;
         this.soundModels = soundModels;
-            this.fragmentManager = fragmentManager;
+//            this.fragmentManager = fragmentManager;
 
     }
 
