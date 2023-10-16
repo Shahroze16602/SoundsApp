@@ -1,25 +1,13 @@
 package com.example.soundsapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.Gravity;
-import android.view.ViewGroup;
-import android.view.Window;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.soundsapp.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;

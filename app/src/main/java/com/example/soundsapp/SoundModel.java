@@ -19,7 +19,6 @@ public class SoundModel {
     }
 
     public void setName(int id) {
-        this.name = name;
     }
 
     public int getImageId() {
