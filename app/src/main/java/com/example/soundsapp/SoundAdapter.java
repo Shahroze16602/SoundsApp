@@ -1,5 +1,4 @@
 package com.example.soundsapp;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -21,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.soundsapp.databinding.BottomSheetLayoutBinding;
 import com.example.soundsapp.databinding.ItemSoundBinding;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -121,6 +119,12 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
                 binding.tvName.setText(currentItem[0].getName());
             } else {
                 Toast.makeText(context, "No more sounds", Toast.LENGTH_SHORT).show();
+            }
+        });
+        binding.btnSetas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
         binding.btnPrevious.setOnClickListener(view -> {
