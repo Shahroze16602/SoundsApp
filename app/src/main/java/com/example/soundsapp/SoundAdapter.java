@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.PopupMenu;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -28,10 +29,10 @@ import java.util.Objects;
 public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHolder> {
     Context context;
     ArrayList<SoundModel> soundModels;
-    static MediaPlayer mediaPlayer=new MediaPlayer();
+    static MediaPlayer mediaPlayer = new MediaPlayer();
     private Handler handler;
     BottomSheetLayoutBinding binding;
-    boolean isOpened = false;
+    static boolean isOpened = false;
 
 
     public SoundAdapter(Context context, ArrayList<SoundModel> soundModels) {
@@ -53,8 +54,10 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         holder.binding.tvName.setText(currentItem.getName());
         holder.binding.imgIcon.setImageDrawable(ContextCompat.getDrawable(context, currentItem.getImageId()));
         holder.binding.getRoot().setOnClickListener(view -> {
-            if (!isOpened)
+            if (!isOpened) {
                 showBottomSheet(holder.getAdapterPosition());
+                isOpened = true;
+            }
         });
     }
 
@@ -65,11 +68,13 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
 
     public static class SoundViewHolder extends RecyclerView.ViewHolder {
         ItemSoundBinding binding;
+
         public SoundViewHolder(@NonNull View itemView) {
             super(itemView);
             binding = ItemSoundBinding.bind(itemView);
         }
     }
+
     @SuppressLint({"RestrictedApi", "QueryPermissionsNeeded"})
     private void showBottomSheet(int position) {
         final SoundModel[] currentItem = {soundModels.get(position)};
@@ -82,6 +87,13 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         handler = new Handler();
         mediaPlayer = MediaPlayer.create(context, currentItem[0].getSoundId());
         mediaPlayer.setLooping(false);
+        MediaPlayer.OnCompletionListener onCompletionListener = mediaPlayer -> {
+            if (!binding.switchReplay.isChecked()) {
+                binding.playPause.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.baseline_play_arrow_24));
+                binding.txtPlayPause.setText("Play");
+            }
+        };
+        mediaPlayer.setOnCompletionListener(onCompletionListener);
         Dialog dialog = new Dialog(context);
         binding = BottomSheetLayoutBinding.inflate(LayoutInflater.from(dialog.getContext()));
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -96,29 +108,44 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
                     updateSeekBar();
                 }
             }
+
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
+
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
         binding.btnPlay.setOnClickListener(view -> {
-            if (!mediaPlayer.isPlaying()) mediaPlayer.start();
-            else {
-                mediaPlayer.seekTo(0);
-                mediaPlayer.start();
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+                binding.txtPlayPause.setText("Play");
+                binding.playPause.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.baseline_play_arrow_24));
+            } else {
+                if (!mediaPlayer.isPlaying()) {
+                    mediaPlayer.start();
+                    binding.txtPlayPause.setText("Pause");
+                    binding.playPause.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.baseline_pause_24));
+                } else {
+                    mediaPlayer.seekTo(0);
+                    mediaPlayer.start();
+                }
             }
         });
-        binding.btnPause.setOnClickListener(view -> mediaPlayer.pause());
         binding.btnNext.setOnClickListener(view -> {
             if (currentPosition[0] < soundModels.size() - 1) {
                 currentItem[0] = soundModels.get(currentPosition[0] + 1);
                 currentPosition[0] += 1;
                 mediaPlayer.stop();
                 mediaPlayer = MediaPlayer.create(context, currentItem[0].getSoundId());
+                mediaPlayer.setOnCompletionListener(onCompletionListener);
+                mediaPlayer.setLooping(false);
+                binding.switchReplay.setChecked(false);
                 binding.seekBar.setMax(mediaPlayer.getDuration());
                 binding.tvName.setText(currentItem[0].getName());
+                binding.playPause.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.baseline_play_arrow_24));
+                binding.txtPlayPause.setText("Play");
             } else {
                 Toast.makeText(context, "No more sounds", Toast.LENGTH_SHORT).show();
             }
@@ -129,13 +156,35 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
                 currentPosition[0] -= 1;
                 mediaPlayer.stop();
                 mediaPlayer = MediaPlayer.create(context, currentItem[0].getSoundId());
+                mediaPlayer.setOnCompletionListener(onCompletionListener);
+                mediaPlayer.setLooping(false);
+                binding.switchReplay.setChecked(false);
+                binding.seekBar.setMax(mediaPlayer.getDuration());
                 binding.tvName.setText(currentItem[0].getName());
+                binding.playPause.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.baseline_play_arrow_24));
+                binding.txtPlayPause.setText("Play");
             } else {
                 Toast.makeText(context, "No more sounds", Toast.LENGTH_SHORT).show();
             }
         });
         binding.switchReplay.setOnCheckedChangeListener((compoundButton, b) -> mediaPlayer.setLooping(b));
         binding.btnRepeat.setOnClickListener(view -> binding.switchReplay.setChecked(!binding.switchReplay.isChecked()));
+        binding.btnSetAs.setOnClickListener(view -> {
+            PopupMenu popupMenu = new PopupMenu(context, binding.imgPopUp);
+            popupMenu.inflate(R.menu.set_as_menu);
+            popupMenu.setOnMenuItemClickListener(menuItem -> {
+                int id = menuItem.getItemId();
+                if (id == R.id.opt_ringtone) {
+                    ToneManager.setRingtone(context, currentItem[0]);
+                } else if (id == R.id.opt_alarm) {
+                    ToneManager.setAlarmSound(context, currentItem[0]);
+                } else if (id == R.id.opt_notification) {
+                    ToneManager.setNotificationSound(context, currentItem[0]);
+                }
+                return true;
+            });
+            popupMenu.show();
+        });
         dialog.setOnCancelListener(dialogInterface -> {
             isOpened = false;
             mediaPlayer.stop();
@@ -151,6 +200,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
         dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
+
     private void updateSeekBar() {
         handler.postDelayed(() -> {
             if (mediaPlayer != null) {

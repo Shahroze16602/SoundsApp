@@ -77,7 +77,6 @@ public class CustomSeekBar extends AppCompatSeekBar {
                 canvas.drawRoundRect(rect, cornerRadius, cornerRadius, donePaint);
             }
         }
-        Log.d("tag", "onDraw: " + ((getProgress() * lineCount) / getMax()));
         super.onDraw(canvas);
     }
 }
